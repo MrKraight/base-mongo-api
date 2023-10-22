@@ -1,0 +1,55 @@
+import { Server } from 'socket.io';
+
+import { passport } from '../services/passport-config.js'
+
+let io = null;
+
+export function initialize(server){
+
+  io = new Server(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"]
+    }
+  });
+
+  io.use((socket, next) => {
+    try{
+      console.log("auth check sockets");
+      passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        if (err || !user) {
+          console.log("auth error sockets", err, user);
+          return next(new Error('Authentication failed.'));
+        }
+        console.log("auth success sockets");
+        socket.user = user;
+        next();
+      })(socket.request, socket.request.res, next);
+    }catch(err){
+      console.log(`Возникла ошибка в сокетах  при авторизации: ${err}`);
+      return next(new Error('Authentication failed.'));
+    }
+  });
+
+  io.on('connection', (socket) => {
+    console.log('A client connected');
+
+    socket.on('disconnect', () => {
+      console.log('A client disconnected');
+    });
+
+    socket.on('error', (error) => {
+      // Handle connection error
+      console.error('Socket error:', error.message);
+    });
+    
+    socket.on('connect_timeout', (timeout) => {
+      // Handle connection timeout
+      console.error('Connection timeout:', timeout);
+    });
+  });
+} 
+
+export function notifyNewNews() {
+  io.emit('notification', 'new News Arrived !');
+}
