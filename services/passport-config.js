@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Strategy } from 'passport-jwt';
 import { ExtractJwt } from 'passport-jwt';
-//import users from '../model/users.js'
+import { userQueries } from '../model/user.js'
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -13,7 +13,8 @@ const jwtOptions = {
 };
 
 passport.use(new Strategy(jwtOptions, async (jwtPayload, done) => {
-  const user = (await users.getUserById(jwtPayload.id))?.[0];
+  console.log('using passport.authenticate');
+  const user = (await userQueries.getUserById(jwtPayload.id));
   if (!user) {
     return done({ name: 'UnauthorizedError', message: 'Unauthorized' }, false);
   }

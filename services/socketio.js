@@ -9,7 +9,7 @@ export function initialize(server){
   io = new Server(server, {
     cors: {
       origin: "*",
-      methods: ["GET", "POST"]
+      methods: "*",
     }
   });
 
@@ -19,23 +19,23 @@ export function initialize(server){
       passport.authenticate('jwt', { session: false }, (err, user, info) => {
         if (err || !user) {
           console.log("auth error sockets", err, user);
-          return next(new Error('Authentication failed.'));
+          socket.disconnect(true); 
         }
         console.log("auth success sockets");
-        socket.user = user;
+        socket.user = user; 
         next();
       })(socket.request, socket.request.res, next);
     }catch(err){
       console.log(`Возникла ошибка в сокетах  при авторизации: ${err}`);
-      return next(new Error('Authentication failed.'));
+      socket.disconnect(true); 
     }
   });
 
   io.on('connection', (socket) => {
-    console.log('A client connected');
+    console.log('Auth client connected');
 
     socket.on('disconnect', () => {
-      console.log('A client disconnected');
+      console.log('Auth client disconnected');
     });
 
     socket.on('error', (error) => {

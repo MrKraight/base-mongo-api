@@ -1,5 +1,6 @@
 import users from '../api/users.js'
 import news from '../api/news.js'
+import files from '../api/files.js'
 
 export function initializeRoutes(app)  {
     app.use((req, res, next) => {
@@ -7,6 +8,7 @@ export function initializeRoutes(app)  {
         next();
     });
 
+    app.use(files);
     app.use(users);
     app.use(news);
 

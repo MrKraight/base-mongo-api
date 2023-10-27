@@ -7,6 +7,7 @@ const router = express.Router();
 import { requireAuth } from '../services/passport-config.js'
 
 import { newsQueries } from '../model/news.js'
+import { filesQueries } from '../model/file.js'
 
 router.get('/news', requireAuth, async (req, res, next) => {
     try {
@@ -18,20 +19,13 @@ router.get('/news', requireAuth, async (req, res, next) => {
 });
 
 router.post('/news', requireAuth, async (req, res, next) => {
-    let creator_id, title, content, publicationDate;
-
     try {
-        ({ creator_id, content, publicationDate, title} = req.body
-            || 
-        (() => { throw new Error('Missing required properties in req.body'); })());
-    }
-    catch (error){
-        return res.status(400).json({ message: error });
-    }
-
-    try {
+        let {creator_id, title, htmlContent, content, publicationDate} = req.body;
         scheduleAction(publicationDate, async () => {
-            let result = await newsQueries.addNews(creator_id, title, content, publicationDate)
+            let news = await newsQueries.addNews(creator_id, title, content, htmlContent, publicationDate)
+            let file = await filesQueries.addFile("","");
+            let fileId = file.id;
+            await newsQueries.addFileIdToNews(news.id, fileId);
             notifyNewNews()
         })
     } catch (error) {
@@ -43,16 +37,10 @@ router.post('/news', requireAuth, async (req, res, next) => {
 router.put('/news/:id', requireAuth, async (req, res, next) => {
     const id = req.params.id;
 
-    let creator_id, title, content, publicationDate;
     try {
-        ({ creator_id, content, publicationDate, title} = req.body)
-        const existingProps = { creator_id, content, publicationDate, title };
-    }
-    catch (error){
-        return res.status(400).json({ message: error });
-    }
+        let { creator_id, content, htmlContent, publicationDate, title } = req.body
+        let existingProps = { creator_id, content, htmlContent, publicationDate, title }
     
-    try {
         let result = await newsQueries.updateNews(id, existingProps);
 
         res.send(result);

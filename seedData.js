@@ -14,13 +14,13 @@ const newsData = [
   {
     creator_id: null, // You can set this to a valid User ID later
     title: 'News Title 3',
-    content: 'News Content 3',
+    content: 'News Content 55555555!![Красивая природа](https://i.pinimg.com/originals/6e/d8/c0/6ed8c02d90638726c33b36f8777cbb90.jpg)',
     publicationDate: new Date(),
   },
   {
     creator_id: null, // You can set this to a valid User ID later
     title: 'News Title 4',
-    content: 'News Content 4',
+    content: '<u>News Content 6</u> Hello world ss ``` language let variable = some interesting content ```',
     publicationDate: new Date(),
   },
 ];

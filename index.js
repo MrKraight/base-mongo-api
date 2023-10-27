@@ -14,10 +14,13 @@ app.use(cors({
   methods: '*'
 }));
 
-const server = http.createServer(app);
-
 import { initializeRoutes } from './services/expressRoutes.js';
 initializeRoutes(app);
+
+const server = http.createServer(app);
+
+import {mongoConnect} from './services/mongoose.js'
+mongoConnect();
 
 import dotenv from 'dotenv';
 dotenv.config();

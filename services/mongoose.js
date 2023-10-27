@@ -32,7 +32,6 @@ export async function mongoDisconnect(){
 }
 
 export async function mongooseQuery(callback){
-    await mongoConnect();
     let res = null;
     try{
         res = await callback();
@@ -40,7 +39,6 @@ export async function mongooseQuery(callback){
         console.log('mongooseQuery error:', err);
     }
     finally{
-        await mongoDisconnect()
         return res;
     }
 }

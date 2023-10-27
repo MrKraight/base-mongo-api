@@ -8,15 +8,22 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-let userQueries = {getUserByLogin, addUser};
+let userQueries = {getUserByLogin, getUserById, addUser};
 
 export { User, userQueries };
 
-async function getUserByLogin() {
+async function getUserByLogin(login) {
     const queryResponse = await mongooseQuery(async () => {
         return await User.findOne({ login });
     })
     return queryResponse
+};
+
+async function getUserById(id) {
+  const queryResponse = await mongooseQuery(async () => {
+      return await User.findById(id);
+  })
+  return queryResponse
 };
 
 async function addUser(login, passwordHash) {
