@@ -1,6 +1,6 @@
 # base-mongo-api
     Видеодемонстрация: https://drive.google.com/file/d/1VFenj0nh1WfihfHhEDmacsTBv6a41Fi4/view
-    Фронтенд: [https://github.com/MrKraight/base-vue-front-for-mongo](https://github.com/MrKraight/base-vue-front-for-mongo)
+    Фронтенд: https://github.com/MrKraight/base-vue-front-for-mongo
     Базовый апи для бд mongo
     Задание: 
 
