@@ -1,19 +1,22 @@
 import fs from 'fs';
 import path from 'path';
 
-function saveFile(dirpath, fileName, fileBuffer) {
+function saveFile(fullPath, writeStream) {
     try {
-        console.log('dirpath', dirpath)
-        if (!fs.existsSync(dirpath)) {
-            fs.mkdirSync(dirpath, { recursive: true });
+        if (!fs.existsSync(fullPath)) {
+            fs.mkdirSync(fullPath, { recursive: true });
         }
+    
+        const outputStream = fs.createWriteStream(fullPath);
+        writeStream.pipe(outputStream);
 
-        let fullPath = path.join(dirpath, fileName);
-        console.log('fullPath', fullPath)
-    
-        fs.writeFileSync(fullPath, fileBuffer);
-    
-        console.log(`File '${fullPath}' written successfully.`);
+        outputStream.on('finish', () => {
+            console.log(`File '${fullPath}' written successfully.`);
+        });
+
+        outputStream.on('error', (error) => {
+            throw `Error writing to ${fullPath}: ${error.message}`;
+        });
       } catch (error) {
         throw `Error writing to ${dirpath} ${fileName}: ${error.message}`;
       }

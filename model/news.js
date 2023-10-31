@@ -18,7 +18,7 @@ const newsSchema = new mongoose.Schema({
 
 const News = mongoose.model('News', newsSchema);
 
-let newsQueries = {addNews, updateNews, removeNews, getAllNews, addFileIdToNews, removeFileIdToNews};
+let newsQueries = {addNews, updateNews, removeNews, getAllNews, getNewsById};
 
 export { News, newsQueries };
 
@@ -52,35 +52,9 @@ async function getAllNews() {
     return queryResponse;
 }
 
-async function addFileIdToNews(newsId, fileId) {
-  try {
-    const news = await News.findById(newsId);
-    if (!news) {
-      console.log('News not found');
-      return;
-    }
-
-    news.file = fileId; // Add the new file's ObjectID to the array
-    await news.save();
-
-    console.log('File added to News:', news);
-  } catch (err) {
-    console.error('Error:', err);
-  }
-}
-
-async function removeFileIdToNews(newsId, fileId) {
-  try {
-    const news = await News.findById(newsId);
-    if (!news) {
-      console.log('News not found');
-      return;
-    }
-    news.file = null;
-    await news.save();
-
-    console.log('File added to News:', news);
-  } catch (err) {
-    console.error('Error:', err);
-  }
-}
+async function getNewsById(id) {
+  const queryResponse = await mongooseQuery(async () => {
+      return await News.findById(id);
+  })
+  return queryResponse
+};

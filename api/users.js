@@ -10,17 +10,10 @@ import bcrypt from 'bcrypt';
 import { userQueries } from '../model/user.js'
 
 router.post('/login', async (req, res, next) => {
-    let login, password;
 
     try {
-        ({ login, password} = req.body
-            || 
-        (() => { throw new Error('Missing required properties in req.body'); })());
-    }catch (error){
-        return res.status(400).json({ message: error });
-    }
+        let { login, password} = req.body
 
-    try {
         let user = await userQueries.getUserByLogin(login)
 
         if (!user) {
@@ -43,18 +36,9 @@ router.post('/login', async (req, res, next) => {
 
 
 router.post('/users', async (req, res, next) => {
-    let login, password;
-
     try {
-        ({ login, password} = req.body
-            || 
-        (() => { throw new Error('Missing required properties in req.body'); })());
-    }
-    catch (error){
-        return res.status(400).json({ message: error });
-    }
+        let { login, password} = req.body
 
-    try {
         let passwordHash = await hashPassword(password)
         let user = await userQueries.addUser(login, passwordHash)
         res.send(user);
